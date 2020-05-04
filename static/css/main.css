@@ -1,0 +1,134 @@
+
+  #items{
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: auto;
+  white-space: nowrap;
+  }
+  .item{
+     display: inline-block;
+     width: 125px;
+     height: 125px;
+  }
+#class-prediction{
+margin:0;
+position: absolute;
+    top: 49%;
+    left: 40%;
+}
+#search-label{
+margin:0;
+position: absolute;
+    top: 54%;
+    left: 27%;
+}
+
+#image-results-section{
+margin:0;
+position: absolute;
+    top: 57%;
+    left: 25%;
+}
+
+figure {
+    display: inline-block;
+    margin: 20px; /* adjust as needed */
+}
+figure img {
+   height: 180px;
+      background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: 3px solid #ccff99;
+  border-style: outset;
+  margin: 0px;
+}
+figure figcaption {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 14px;
+    text-shadow: none;
+    text-align: center;
+    height: auto;
+    word-wrap: break-word;
+    width:175px;
+    border: 3px solid #ccff99;
+}
+
+ .btn-primary {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+margin:0;
+position: absolute;
+    top: 40%;
+    left: 45%;
+}
+
+.img-preview {
+    width: 256px;
+    height: 256px;
+    position: relative;
+    border: 3px solid #F8F8F8;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+
+
+.img-preview>div {
+    width: 100%;
+    height: 100%;
+    background-size: 256px 256px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+
+input[type="file"] {
+    display: none;
+}
+
+
+
+.upload-label{
+    display: inline-block;
+    padding: 12px 30px;
+    background: #39D2B4;
+    color: #fff;
+    font-size: 1em;
+    transition: all .4s;
+    cursor: pointer;
+}
+
+
+
+.upload-label:hover{
+    background: #34495E;
+    color: #39D2B4;
+}
+
+img { border: 0; }
+img.highlight { border-style: outset;
+border: 5px solid #ccff99; }
+
+.loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

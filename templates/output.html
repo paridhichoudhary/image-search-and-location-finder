@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends "base.html" %} {% block content %}
+
+        <div class="row">
+            <div class="col-sm-4">
+                <form id="upload-file-first-Image" method="post" enctype="multipart/form-data">
+                    <label for="firstImageUpload" class="upload-label">First Image Choose...</label>
+                    <input type="file" name="file" id="firstImageUpload" accept=".png, .jpg, .jpeg">
+                </form>
+                <div class="first-image-section" style="display:none;">
+                    <div class="img-preview">
+                        <div id="firstImagePreview">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-lg " id="btn-find-first-location">Find location</button>
+                    </div>
+                </div>
+                <div class="loaderFirstImage" style="display:none;"></div>
+
+            </div>
+
+            <div class="col-sm-4">
+                <form id="upload-file-second-Image" method="post" enctype="multipart/form-data">
+                    <label for="secondImageUpload" class="upload-label">Second Image Choose...</label>
+                    <input type="file" name="file" id="secondImageUpload" accept=".png, .jpg, .jpeg">
+                </form>
+                <div class="second-image-section" style="display:none;">
+                    <div class="img-preview">
+                        <div id="secondImagePreview">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-lg " id="btn-find-second-location">Find location</button>
+                    </div>
+                </div>
+
+                <div class="loaderSecondImage" style="display:none;"></div>
+
+            </div>
+
+            <div class="col-sm-4">
+                <form id="upload-file-third-Image" method="post" enctype="multipart/form-data">
+                    <label for="thirdImageUpload" class="upload-label">Third Image Choose...</label>
+                    <input type="file" name="file" id="thirdImageUpload" accept=".png, .jpg, .jpeg">
+                </form>
+                <div class="third-image-section" style="display:none;">
+                    <div class="img-preview">
+                        <div id="thirdImagePreview">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-lg " id="btn-find-third-location">Find location</button>
+                    </div>
+                </div>
+
+                <div class="loaderThirdImage" style="display:none;"></div>
+
+            </div>
+        </div>
+
+        <div class="row" id="results">
+            <div class="col-md-4">
+                <figure id="result-1-figure">
+                    <img width="192px" height="192px" id = "result-1-img" src="{{url_for('static', filename='images/result_0.png')}}">
+                    <figcaption id="result-1-caption"></figcaption>
+                </figure>
+            </div>
+            <div class="col-md-4">
+                <figure>
+                    <img width="192px" height="192px" src="{{url_for('static', filename='images/result_1.png')}}">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+            <div class="col-md-4">
+                <figure>
+                    <img width="192px" height="192px" src="{{url_for('static', filename='images/result_2.png')}}">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+        </div>
+
+{% endblock %}
