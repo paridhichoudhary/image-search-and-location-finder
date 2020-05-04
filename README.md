@@ -1,154 +1,35 @@
-Deep Learning Keras and Flask as Web App
-In this tutorial, we will present a simple method to take a Keras model and create Python Flask Web App.
+# Location Finder Web App
 
-Specifically, we will learn:
+Web App to display images curated from Instagram that have no geo-tagging on them to be able to find their locations and display as a result.
 
-How to load a Keras model into memory so it can be efficiently used for inference
-How to use the Flask web framework to create an endpoint for our API
-How to use the web api for our UI screen
-How to make predictions using our model, and return the results to the UI
-Configuring your development environment
-We’ll be making the assumption that Keras is already configured and installed on your machine. If not, please ensure you install Keras using the official install instructions.
+The following steps are taken to collect data, train the model, find applications on untagged images and create an app:
+1) **Training and test data collection**: training_data_collection.ipynb contains the code used to generate training and test data. While extracting images, geo-tag of image location, number of likes are also collected.
+2) **Extract latitude and longtitude for addresses**: Once we have location link for the images that are geo-tagged, we extract the latitude, longitude from page source of Instagram page using BeautifulSoup. These lat,long are then fed to geopy to extract city_name, state name. The code is stored in extract_latitude_longitude_from_address.ipynb.
+3) **Training Model**: VGG-16 model trained on ImageNet is leveraged with the last two layers retrained to classify 7 classes of scenaries - Mountain, Glacier, Geyser, Road, People, Sea, Northern Lights. The model is trained and stored in HDF5 file and reused later for prediction and visualization purposes. Each picture that was extracted in Step 1 is classified using this model and classes are stored in local files.
+4) **Visualizing model layers**: CNN network trained in Step 3 is visualized using code from 'Visualizing and Understanding
+Convolutional Networks' research paper by 'Matthew D. Zeiler and Rob Fergus'. The code is present in visualizing_vgg_16_layers.ipynb where the output gives images of each filter in 5 blocks of CNN layers and it is apparent which filter focuses on what aspects of images.
+5) **Predicting Searching Images**: We need to find top 3 images closest to the query image and return their stored locations as a result. The code can be found in 'finding_locations_matching_untagged_images_on_instagram.ipynb'.
 
-We’ll need to install Flask, it is a Python web framework, so we can build our API endpoint. We’ll also need requests so we can consume our API as well.
+The app is deployed using Heroku and can be accessed here: *https://dry-mountain-96772.herokuapp.com/*
 
-$ pip install flask gevent requests pillow
-Also we will use the requirements file. We use it to simple load dependencies.
+### Guidelines on using the app are below:
 
-Below is our requirements.txt file
+#### Landing Page:
+![Landing Page](/static/images/Screenshot_1.png)
 
-Werkzeug
-Flask
-numpy
-Keras
-gevent
-pillow
-h5py
-tensorflow
-We must to use the below command to load dependencies
+On the landing page, click on the image of which you want to find location. When you click, a green border appears on the image. Click on the 'Find Location' button and you will be able to find the locations of 3 most similar images to selected picture
 
-      $ pip install -r requirements.txt
-Make sure you have the following installed:
+#### Result Page:
+![Result Page](/static/images/Screenshot_2.jpg)
 
-tensorflow
-keras
-flask
-pillow
-h5py
-gevent
-Create your Keras Rest Api
-We create a app.py class and we use three image model (ResNet50, VGG16, Xception)
+On submitting the request, top 3 images are shows with their locations below which can be a possible location of the image.
 
-We include this libraries below.
+#### Another example:
+![Result 2](/static/images/Screenshot_3.png)
 
-      # ResNet50
-      from keras.applications.resnet50 import ResNet50
-      from keras.applications.imagenet_utils import preprocess_input as preprocess_input_resNet50, decode_predictions as decode_predictions_resNet50
-      # VGG16
-      from keras.applications.vgg16 import VGG16
-      from keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16, decode_predictions as decode_predictions_vgg16
-      # Xception
-      from keras.applications.xception import Xception
-      from keras.applications.xception import preprocess_input as preprocess_input_xception, decode_predictions as decode_predictions_xception
-      You can also use pretrained model from Keras Check https://keras.io/applications/
-
-We will need to upload models that were created before
-
-      modelResNet50 = ResNet50(weights='imagenet')
-      print('ResNet50 Model loaded.')
-
-      modelVGG16 = VGG16(weights='imagenet', include_top=True)
-      print('VGG16 Model loaded.')
-
-      modelXception = Xception(weights='imagenet', include_top=True)
-      print('Xception Model loaded.')
-We will need to create API endpoint services
-
-      @app.route('/', methods=['GET'])
-      def index():
-          # Main page
-          return render_template('index.html')
-      In the code above, it is redirected to the index.html page
-
-            @app.route('/predictResNet50', methods=['GET', 'POST'])
-            def predictResNet50():
-                if request.method == 'POST':
-                    file_path = get_file_path_and_save(request)
-
-                    img = image.load_img(file_path, target_size=(224, 224))
-
-                    # Preprocessing the image
-                    x = image.img_to_array(img)
-                    # x = np.true_divide(x, 255)
-                    x = np.expand_dims(x, axis=0)
-
-                    # Be careful how your trained model deals with the input
-                    # otherwise, it won't make correct prediction!
-                    x = preprocess_input_resNet50(x, mode='caffe')
-                    # Make prediction
-                    preds = modelResNet50.predict(x)
-
-                    # Process your result for human
-                    # pred_class = preds.argmax(axis=-1)            # Simple argmax
-                    pred_class = decode_predictions_resNet50(preds, top=1)   # ImageNet Decode
-                    result = str(pred_class[0][0][1])               # Convert to string
-                    return result
-                return None
+Sometimes, the app doesnt react fast enough and you might have to select the same picture again to get the relevant result. Please bear with it!
 
 
 
-            @app.route('/predictVGG16', methods=['GET', 'POST'])
-            def predictVGG16():
-                if request.method == 'POST':
-                    file_path = get_file_path_and_save(request)
-
-                    img = image.load_img(file_path, target_size=(224, 224))
-                    img_data = image.img_to_array(img)
-                    img_data = np.expand_dims(img_data, axis=0)
-                    img_data = preprocess_input_vgg16(img_data)
-
-                    preds = modelVGG16.predict(img_data)
-
-                    # decode the results into a list of tuples (class, description, probability)
-                    pred_class = decode_predictions_vgg16(preds, top=1)
-                    result = str(pred_class[0][0][1])  # Convert to string
-                    return result
-                return None
 
 
-            @app.route('/predictXception', methods=['GET', 'POST'])
-            def predictXception():
-                if request.method == 'POST':
-                    file_path = get_file_path_and_save(request)
-
-                    img = image.load_img(file_path, target_size=(224, 224))
-                    img_data = image.img_to_array(img)
-                    img_data = np.expand_dims(img_data, axis=0)
-                    img_data = preprocess_input_xception(img_data)
-
-                    preds = modelXception.predict(img_data)
-
-                    # decode the results into a list of tuples (class, description, probability)
-                    pred_class = decode_predictions_xception(preds, top=1)
-                    result = str(pred_class[0][0][1])  # Convert to string
-                    return result
-                return None
-In the code above, we created three endpoint service . Their names are ResNet50, VGG16, Xception.
-
-Firstly, We are recording the pictures from come to client. We are converting it to a matrix of 224 x 224. Then we are preprocess it.
-
-Finally, we use a model to prediction and convert it string result. Than we send it back to the client.
-
-Starting the Keras Server
-The Flask + Keras server can be started by running:
-
-      $ python app.py
-      ResNet50 Model loaded.
-      VGG16 Model loaded.
-      Xception Model loaded.
-      Running on http://localhost:5000
-      You can now access the Prediction Flask WebApp via http://127.0.0.1:5000
-
-![alt text](https://cdn-images-1.medium.com/max/800/1*-63HUHPk9QkDMiaYeckfsQ.png)
-
-We have successfully called the Keras REST API and obtained the model’s predictions via Python and We have achieved successful estimates :)
