@@ -10,7 +10,7 @@ numpy==1.16.5
 pandas==0.25.1
 keras==2.3.1
 keras-preprocessing==1.1.0
-tensorflow==2.0.0a0
+tensorflow==2.5.1
 gevent==1.4.0
 cachetools==4.0.0
 certifi==2019.11.28
